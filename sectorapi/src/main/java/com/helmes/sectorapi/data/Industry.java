@@ -1,4 +1,4 @@
-package com.helmes.sectorapi.entities;
+package com.helmes.sectorapi.data;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,11 +13,11 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Sector {
+public class Industry {
 
     @Id
     private Long id;
 
     @OneToMany
-    private List<Industry> industries;
+    private List<IndustrySpecification> industrySpecifications;
 }

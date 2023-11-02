@@ -1,4 +1,4 @@
-package com.helmes.sectorapi.entities;
+package com.helmes.sectorapi.data;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
