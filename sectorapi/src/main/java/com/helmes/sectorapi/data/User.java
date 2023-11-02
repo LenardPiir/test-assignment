@@ -18,6 +18,8 @@ public class User {
     @Id
     private Long id;
 
+    private String name;
+
     @OneToMany
     private List<Sector> sectors;
 
