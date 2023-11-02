@@ -18,6 +18,8 @@ public class Industry {
     @Id
     private Long id;
 
+    private String name;
+
     @OneToMany
     private List<IndustrySpecification> industrySpecifications;
 }

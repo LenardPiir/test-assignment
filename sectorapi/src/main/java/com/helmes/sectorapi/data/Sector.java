@@ -18,6 +18,8 @@ public class Sector {
     @Id
     private Long id;
 
+    private String name;
+
     @OneToMany
     private List<Industry> industries;
 }

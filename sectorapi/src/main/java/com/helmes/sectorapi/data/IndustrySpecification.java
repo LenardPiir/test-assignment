@@ -14,4 +14,7 @@ public class IndustrySpecification {
 
     @Id
     private Long id;
+
+    private String name;
+
 }
