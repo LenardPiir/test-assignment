@@ -1,1 +1,0 @@
-INSERT INTO customer (name) VALUES ('test-user');
