@@ -1,8 +1,7 @@
 package com.helmes.sectorapi.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +19,11 @@ public class Industry {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy="industry")
     private List<IndustrySpecification> industrySpecifications;
+
+    @ManyToOne
+    @JoinColumn(name="sector_id", nullable=false)
+    @JsonIgnore
+    private Sector sector;
 }

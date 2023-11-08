@@ -1,5 +1,6 @@
 package com.helmes.sectorapi.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -20,6 +21,7 @@ public class Sector {
 
     private String name;
 
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(mappedBy="sector")
     private List<Industry> industries;
 }

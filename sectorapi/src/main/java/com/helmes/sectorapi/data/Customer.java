@@ -20,9 +20,6 @@ public class Customer {
 
     private String name;
 
-    @OneToMany
-    private List<Sector> sectors;
-
     private boolean termAgreement;
 
 }
