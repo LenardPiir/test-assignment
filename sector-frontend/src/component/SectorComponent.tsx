@@ -11,14 +11,23 @@ import {
 } from "@mui/material";
 import {TreeView} from '@mui/x-tree-view/TreeView';
 import {TreeItem} from '@mui/x-tree-view/TreeItem';
-import {FormEvent, SyntheticEvent, useState} from "react";
+import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import axios from "axios";
 
+const baseURL = '/sectors'
 
-export default function SectorComponent({sectorService}:any) {
+export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
+    const [sectors, setSectors] = useState([]);
+
+    useEffect(() => {
+        axios.get(baseURL).then((response) => {
+            setSectors(response.data);
+        });
+    }, []);
 
     const handleToggle = (event: SyntheticEvent, nodeIds: string[]) => {
         setExpanded(nodeIds);
@@ -28,22 +37,25 @@ export default function SectorComponent({sectorService}:any) {
         setSelected(nodeIds);
     };
 
-    const handleExpandClick = () => {
-        setExpanded((oldExpanded) =>
-            oldExpanded.length === 0 ? ['1', '5', '6', '7'] : [],
-        );
-    };
-
-    const handleSelectClick = () => {
-        setSelected((oldSelected) =>
-            oldSelected.length === 0 ? ['1', '2', '3', '4', '5', '6', '7', '8', '9'] : [],
-        );
-    };
-
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
     };
+
+    function MapSectors({ sectorElements }: any) {
+        return (
+            sectorElements.map((sector: { id: string, name: string, industries: [{id: string, name: null, industrySpecifications: []}] }) => (
+                <TreeItem nodeId={sector.name} label={sector.name}>
+                    {sector.industries.map((industry: any) => (
+                        <TreeItem nodeId={industry.name} label={industry.name}>
+                            {industry.industrySpecifications.map((industrySpecification: any) => (
+                                <TreeItem nodeId={industrySpecification.name} label={industrySpecification.name}></TreeItem>))}
+                        </TreeItem>))
+                    }
+                </TreeItem>
+            ))
+        );
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -91,19 +103,7 @@ export default function SectorComponent({sectorService}:any) {
                                 onNodeSelect={handleSelect}
                                 multiSelect
                             >
-                                <TreeItem nodeId="1" label="Manufacturing">
-                                    <TreeItem nodeId="2" label="Calendar" />
-                                    <TreeItem nodeId="3" label="Chrome" />
-                                    <TreeItem nodeId="4" label="Webstorm" />
-                                </TreeItem>
-                                <TreeItem nodeId="5" label="Other">
-                                    <TreeItem nodeId="6" label="MUI">
-                                        <TreeItem nodeId="7" label="src">
-                                            <TreeItem nodeId="8" label="index.js" />
-                                            <TreeItem nodeId="9" label="tree-view.js" />
-                                        </TreeItem>
-                                    </TreeItem>
-                                </TreeItem>
+                                <MapSectors sectorElements={sectors}></MapSectors>
                             </TreeView>
                         </Grid>
 
