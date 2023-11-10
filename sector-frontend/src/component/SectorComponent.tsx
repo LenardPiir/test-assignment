@@ -18,10 +18,15 @@ import axios from "axios";
 
 const baseURL = '/sectors'
 
+interface Sector {
+    code: string,
+    name: string,
+    children: Sector[]
+}
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
-    const [sectors, setSectors] = useState([]);
+    const [sectors, setSectors] = useState<Sector[]>([]);
 
     useEffect(() => {
         axios.get(baseURL).then((response) => {
@@ -42,18 +47,14 @@ export default function SectorComponent() {
         const data = new FormData(event.currentTarget);
     };
 
-    function MapSectors({ sectorElements }: any) {
+    function MapSectors({elements}: {elements: Sector[]}) {
         return (
-            sectorElements.map((sector: { id: string, name: string, industries: [{id: string, name: null, industrySpecifications: []}] }) => (
-                <TreeItem nodeId={sector.name} label={sector.name}>
-                    {sector.industries.map((industry: any) => (
-                        <TreeItem nodeId={industry.name} label={industry.name}>
-                            {industry.industrySpecifications.map((industrySpecification: any) => (
-                                <TreeItem nodeId={industrySpecification.name} label={industrySpecification.name}></TreeItem>))}
-                        </TreeItem>))
-                    }
-                </TreeItem>
-            ))
+            <>{
+                elements?.map((element) =>
+                <TreeItem nodeId={element.code} label={element.name} key={element.code}>
+                    {MapSectors({elements: element.children})}
+                </TreeItem>)
+            }</>
         );
     }
 
@@ -103,7 +104,7 @@ export default function SectorComponent() {
                                 onNodeSelect={handleSelect}
                                 multiSelect
                             >
-                                <MapSectors sectorElements={sectors}></MapSectors>
+                                <MapSectors elements={sectors}></MapSectors>
                             </TreeView>
                         </Grid>
 
