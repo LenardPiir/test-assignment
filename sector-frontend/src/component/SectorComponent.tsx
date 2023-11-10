@@ -14,24 +14,16 @@ import {TreeItem} from '@mui/x-tree-view/TreeItem';
 import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import axios from "axios";
+import {Sector} from "../interface/SectorTypes";
+import {getSectorData} from "../service/SectorService";
 
-const baseURL = '/sectors'
-
-interface Sector {
-    code: string,
-    name: string,
-    children: Sector[]
-}
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
     const [sectors, setSectors] = useState<Sector[]>([]);
 
     useEffect(() => {
-        axios.get(baseURL).then((response) => {
-            setSectors(response.data);
-        });
+        getSectorData().then((response) => {setSectors(response.data)})
     }, []);
 
     const handleToggle = (event: SyntheticEvent, nodeIds: string[]) => {
