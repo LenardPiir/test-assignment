@@ -15,12 +15,17 @@ import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Sector} from "../interface/SectorTypes";
-import {getSectorData} from "../service/SectorService";
+import {getSectorData, showToastMessage} from "../service/SectorService";
 
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
     const [sectors, setSectors] = useState<Sector[]>([]);
+    const [selectedSectors, setSelectedSectors] = useState<Sector[]>([]);
+
+    const [isNameEmpty, setIsNameEmpty] = useState<boolean>(false);
+    const [isSectorsEmpty, setIsSectorsEmpty] = useState<boolean>(false);
+    const [isCustomerAgreementEmpty, setIsCustomerAgreementEmpty] = useState<boolean>(false);
 
     useEffect(() => {
         getSectorData().then((response) => {setSectors(response.data)})
@@ -31,12 +36,35 @@ export default function SectorComponent() {
     };
 
     const handleSelect = (event: SyntheticEvent, nodeIds: string[]) => {
+        setSelectedSectors(sectors.filter((sector) => nodeIds.filter((nodeId) => nodeId === sector.code)));
+        //console.log(selectedSectors);
         setSelected(nodeIds);
     };
+
+    const validateForm = (data: FormData) => {
+        setIsNameEmpty(false);
+        setIsCustomerAgreementEmpty(false);
+        setIsSectorsEmpty(false);
+
+        if (!data.get('name')) {
+            setIsNameEmpty(true);
+        }
+        if (!data.get('customerAgreement')) {
+            setIsCustomerAgreementEmpty(true);
+        }
+        if (!data.get('selectedSectors')) {
+            setIsSectorsEmpty(true);
+        }
+        if (data.get('name') && data.get('customerAgreement') && data.get('selectedSectors')) {
+            showToastMessage();
+        }
+    }
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+
+        validateForm(data);
     };
 
     function MapSectors({elements}: {elements: Sector[]}) {
@@ -69,7 +97,9 @@ export default function SectorComponent() {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
-                                required
+                                required={true}
+                                error={isNameEmpty}
+                                helperText={isNameEmpty && "Name must not be empty."}
                                 fullWidth
                                 name="name"
                                 label="Name"
@@ -85,7 +115,6 @@ export default function SectorComponent() {
                         </Grid>
 
                         <Grid item xs={12}>
-
                             <TreeView
                                 aria-label="controlled"
                                 defaultCollapseIcon={<ExpandMoreIcon />}
@@ -96,7 +125,10 @@ export default function SectorComponent() {
                                 onNodeSelect={handleSelect}
                                 multiSelect
                             >
-                                <MapSectors elements={sectors}></MapSectors>
+                                <MapSectors elements={[{code: '1212312', name: 'test', children:
+                                        [{code: '1312312', name: 'test55555', children:
+                                                [{code: '7777', name: 'asefase', children: []}]}]},
+                                    {code: '77712177', name: 'testsdfas', children: []}]}></MapSectors>
                             </TreeView>
                         </Grid>
 
@@ -104,13 +136,31 @@ export default function SectorComponent() {
                             <Typography component="h6" variant="h6">
                                 Sector selected:
                             </Typography>
+                            <div>{
+                                isSectorsEmpty ? (<Typography color={'#d32f2f'} >
+                                    At least one sector must be selected.
+                                </Typography>) : <div></div>
+                            }</div>
                         </Grid>
 
                         <Grid item xs={12} mt={3}>
                             <FormControlLabel
-                                control={<Checkbox value="customerAgreement" color="primary" />}
-                                label="Agree to terms *"
+                                control={
+                                <Checkbox
+                                    value="customerAgreement"
+                                    color="primary"
+                                    id="customerAgreement"
+                                    name="customerAgreement"
+                                />
+                                }
+                                required={true}
+                                label="Agree to terms"
                             />
+                            <div>{
+                                isCustomerAgreementEmpty ? (<Typography color={'#d32f2f'} >
+                                    You must agree to terms.
+                                </Typography>) : <div></div>
+                            }</div>
                         </Grid>
                     </Grid>
                     <Button
