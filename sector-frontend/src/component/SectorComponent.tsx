@@ -15,20 +15,19 @@ import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Sector} from "../interface/SectorTypes";
-import {getSectorData, showToastMessage} from "../service/SectorService";
+import {getSectors, saveSectors, showToastMessage} from "../service/SectorService";
 
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
     const [sectors, setSectors] = useState<Sector[]>([]);
-    const [selectedSectors, setSelectedSectors] = useState<Sector[]>([]);
 
     const [isNameEmpty, setIsNameEmpty] = useState<boolean>(false);
     const [isSectorsEmpty, setIsSectorsEmpty] = useState<boolean>(false);
     const [isCustomerAgreementEmpty, setIsCustomerAgreementEmpty] = useState<boolean>(false);
 
     useEffect(() => {
-        getSectorData().then((response) => {setSectors(response.data)})
+        getSectors().then((response) => {setSectors(response.data)})
     }, []);
 
     const handleToggle = (event: SyntheticEvent, nodeIds: string[]) => {
@@ -36,8 +35,6 @@ export default function SectorComponent() {
     };
 
     const handleSelect = (event: SyntheticEvent, nodeIds: string[]) => {
-        setSelectedSectors(sectors.filter((sector) => nodeIds.filter((nodeId) => nodeId === sector.code)));
-        //console.log(selectedSectors);
         setSelected(nodeIds);
     };
 
@@ -52,12 +49,17 @@ export default function SectorComponent() {
         if (!data.get('customerAgreement')) {
             setIsCustomerAgreementEmpty(true);
         }
-        if (!data.get('selectedSectors')) {
+        if (selected.length === 0) {
             setIsSectorsEmpty(true);
         }
         if (data.get('name') && data.get('customerAgreement') && data.get('selectedSectors')) {
+            submitForm();
             showToastMessage();
         }
+    }
+
+    const submitForm = () => {
+        saveSectors(selected).then((response) => setSectors(response.data));
     }
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -125,17 +127,9 @@ export default function SectorComponent() {
                                 onNodeSelect={handleSelect}
                                 multiSelect
                             >
-                                <MapSectors elements={[{code: '1212312', name: 'test', children:
-                                        [{code: '1312312', name: 'test55555', children:
-                                                [{code: '7777', name: 'asefase', children: []}]}]},
-                                    {code: '77712177', name: 'testsdfas', children: []}]}></MapSectors>
+                                <MapSectors elements={sectors}></MapSectors>
                             </TreeView>
-                        </Grid>
 
-                        <Grid item xs={12} mt={1}>
-                            <Typography component="h6" variant="h6">
-                                Sector selected:
-                            </Typography>
                             <div>{
                                 isSectorsEmpty ? (<Typography color={'#d32f2f'} >
                                     At least one sector must be selected.

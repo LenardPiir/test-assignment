@@ -1,2 +1,2 @@
-export const baseURL = '/sectors'
+export const baseURL = '/sector'
 
