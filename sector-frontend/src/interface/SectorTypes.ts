@@ -3,3 +3,9 @@ export interface Sector {
     name: string,
     children: Sector[]
 }
+
+export interface SectorForm {
+    name: string,
+    sectors: string[],
+    agreeToTerms: boolean;
+}

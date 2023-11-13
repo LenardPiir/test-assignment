@@ -14,8 +14,8 @@ import {TreeItem} from '@mui/x-tree-view/TreeItem';
 import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {Sector} from "../interface/SectorTypes";
-import {getSectors, saveSectors, showToastMessage} from "../service/SectorService";
+import {Sector, SectorForm} from "../interface/SectorTypes";
+import {getSectors, saveForm, showToastMessage} from "../service/SectorService";
 
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
@@ -52,14 +52,24 @@ export default function SectorComponent() {
         if (selected.length === 0) {
             setIsSectorsEmpty(true);
         }
-        if (data.get('name') && data.get('customerAgreement') && data.get('selectedSectors')) {
-            submitForm();
-            showToastMessage();
+        if (data.get('name') && data.get('customerAgreement') && selected.length > 0) {
+            // In this case data cannot be null
+            // @ts-ignore
+            submitForm(data.get('name').toString(), selected);
         }
     }
 
-    const submitForm = () => {
-        saveSectors(selected).then((response) => setSectors(response.data));
+    const submitForm = (name: string, selected: string[]) => {
+        const formData: SectorForm = {
+            name: name,
+            sectors: selected,
+            agreeToTerms: true
+        }
+
+        saveForm(formData).then((response) => {
+            //setSectors(response.data);
+            showToastMessage();
+        });
     }
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -129,7 +139,6 @@ export default function SectorComponent() {
                             >
                                 <MapSectors elements={sectors}></MapSectors>
                             </TreeView>
-
                             <div>{
                                 isSectorsEmpty ? (<Typography color={'#d32f2f'} >
                                     At least one sector must be selected.

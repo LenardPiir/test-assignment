@@ -2,13 +2,14 @@ import {baseURL} from "../util/SectorUtil";
 import axios from "axios";
 import {toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {SectorForm} from "../interface/SectorTypes";
 
 export const getSectors = () => {
-    return axios.get(baseURL + '/all');
+    return axios.get(baseURL + '/sectors');
 }
 
-export const saveSectors = (selectedSectors: string[]) => {
-    return axios.post(baseURL + '/save', selectedSectors);
+export const saveForm = (sectorForm: SectorForm) => {
+    return axios.post(baseURL + '/sectors', sectorForm);
 }
 
 export const showToastMessage = () => {

@@ -1,2 +1,2 @@
-export const baseURL = '/sector'
+export const baseURL = '/sector-api'
 
