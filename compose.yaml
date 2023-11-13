@@ -1,10 +1,21 @@
 services:
-  postgres:
-    image: 'postgres'
-    restart: 'always'
-    environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+  database:
+    image: 'postgres:16.0'
     ports:
       - '5432:5432'
+    environment:
+      - 'POSTGRES_USER=sector-api'
+      - 'POSTGRES_DB=sector'
+      - 'POSTGRES_PASSWORD=sector-api'
+
+  sector-frontend:
+    build:
+      context: ./sector-frontend
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: sector-frontend
+    ports:
+      - 3000:3000
+
+
