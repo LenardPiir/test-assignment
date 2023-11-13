@@ -83,9 +83,12 @@ export default function SectorComponent() {
         return (
             <>{
                 elements?.map((element) =>
-                <TreeItem nodeId={element.code} label={element.name} key={element.code}>
-                    {MapSectors({elements: element.children})}
-                </TreeItem>)
+                        element.children.length > 0 ?
+                        <TreeItem nodeId={element.code} label={element.name} key={element.code}>
+                            {MapSectors({elements: element.children})}
+                        </TreeItem> :
+                        <TreeItem nodeId={element.code} label={element.name} key={element.code}></TreeItem>
+                )
             }</>
         );
     }
@@ -122,7 +125,7 @@ export default function SectorComponent() {
 
                         <Grid item xs={12}>
                             <Typography component="h5" variant="h5">
-                                Please select Sector from below *:
+                                Please select Sectors from below *:
                             </Typography>
                         </Grid>
 
