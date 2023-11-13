@@ -1,25 +1,20 @@
-package com.helmes.sectorapi.data;
+package com.helmes.sectorapi.domain.customer.internal;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
+@Entity(name = "customer")
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
-
+class CustomerEntity {
     @Id
-    private Long id;
-
+    private UUID id;
     private String name;
-
-    private boolean termAgreement;
-
+    private boolean agreeToTerms;
 }
