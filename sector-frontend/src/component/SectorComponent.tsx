@@ -15,12 +15,18 @@ import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Sector, SectorForm} from "../interface/SectorTypes";
-import {getSectors, saveForm, showToastMessage} from "../service/SectorService";
+import {
+    getRegisteredCustomer,
+    getSectors,
+    saveForm,
+    showToastMessage
+} from "../service/SectorService";
 
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string[]>([]);
     const [sectors, setSectors] = useState<Sector[]>([]);
+    const [registeredCustomer, setRegisteredCustomer] = useState<SectorForm>();
 
     const [isNameEmpty, setIsNameEmpty] = useState<boolean>(false);
     const [isSectorsEmpty, setIsSectorsEmpty] = useState<boolean>(false);
@@ -28,6 +34,7 @@ export default function SectorComponent() {
 
     useEffect(() => {
         getSectors().then((response) => {setSectors(response.data)})
+        getRegisteredCustomer().then((response) => {setRegisteredCustomer(response.data)})
     }, []);
 
     const handleToggle = (event: SyntheticEvent, nodeIds: string[]) => {
@@ -67,7 +74,7 @@ export default function SectorComponent() {
         }
 
         saveForm(formData).then((response) => {
-            //setSectors(response.data);
+            //setCustomerSectors(response.data);
             showToastMessage();
         });
     }
@@ -79,6 +86,18 @@ export default function SectorComponent() {
         validateForm(data);
     };
 
+    function DisplayCustomerSectors() {
+        return (
+            <>{
+                registeredCustomer?.sectors.map((sectorCode: string) =>
+                    <Typography variant="caption" display="block" gutterBottom>
+                        {sectorCode}
+                    </Typography>
+                )
+            }</>
+        )
+    }
+
     function MapSectors({elements}: {elements: Sector[]}) {
         return (
             <>{
@@ -86,7 +105,8 @@ export default function SectorComponent() {
                         element.children.length > 0 ?
                         <TreeItem nodeId={element.code} label={element.name} key={element.code}>
                             {MapSectors({elements: element.children})}
-                        </TreeItem> :
+                        </TreeItem>
+                            :
                         <TreeItem nodeId={element.code} label={element.name} key={element.code}></TreeItem>
                 )
             }</>
@@ -163,12 +183,24 @@ export default function SectorComponent() {
                                 label="Agree to terms"
                             />
                             <div>{
-                                isCustomerAgreementEmpty ? (<Typography color={'#d32f2f'} >
-                                    You must agree to terms.
-                                </Typography>) : <div></div>
+                                isCustomerAgreementEmpty ? (
+                                    <Typography color={'#d32f2f'} >
+                                        You must agree to terms.
+                                    </Typography>) : <div></div>
                             }</div>
                         </Grid>
                     </Grid>
+
+                    <div> {
+                        registeredCustomer ? (
+                            <Grid item xs={12} mt={1}>
+                                <Typography component="h6" variant="h6">
+                                    Saved Sectors: <DisplayCustomerSectors></DisplayCustomerSectors>
+                                </Typography>
+                            </Grid>
+                        ) : <div></div>
+                    }</div>
+
                     <Button
                         type="submit"
                         fullWidth

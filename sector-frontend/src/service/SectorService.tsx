@@ -9,11 +9,15 @@ export const getSectors = () => {
 }
 
 export const saveForm = (sectorForm: SectorForm) => {
-    return axios.post(baseURL + '/sectors', sectorForm);
+    return axios.post(baseURL + '/customer', sectorForm);
+}
+
+export const getRegisteredCustomer = () => {
+    return axios.get(baseURL + '/customer');
 }
 
 export const showToastMessage = () => {
     toast.success("Sectors have been saved.", {
-        position: toast.POSITION.BOTTOM_CENTER,
+        position: toast.POSITION.TOP_CENTER,
     });
 };
