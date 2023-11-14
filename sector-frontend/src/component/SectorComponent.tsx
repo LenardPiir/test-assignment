@@ -15,12 +15,7 @@ import {FormEvent, SyntheticEvent, useEffect, useState} from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Sector, SectorForm} from "../interface/SectorTypes";
-import {
-    getRegisteredCustomer,
-    getSectors,
-    saveForm,
-    showToastMessage
-} from "../service/SectorService";
+import {getRegisteredCustomer, getSectors, saveForm, showToastMessage} from "../service/SectorService";
 
 export default function SectorComponent() {
     const [expanded, setExpanded] = useState<string[]>([]);
@@ -88,9 +83,11 @@ export default function SectorComponent() {
         return (
             <>{
                 registeredCustomer?.sectors.map((sectorCode: string) =>
-                    <Typography variant="subtitle1" display="block" gutterBottom key={sectorCode}>
-                        {sectorCode}
-                    </Typography>
+                    <div key={sectorCode}>
+                        <Typography variant="subtitle1" display="block" gutterBottom>
+                            {sectorCode}
+                        </Typography>
+                    </div>
                 )
             }</>
         )
