@@ -60,8 +60,6 @@ export default function SectorComponent() {
             setIsSectorsEmpty(true);
         }
         if (data.get('name') && data.get('customerAgreement') && selected.length > 0) {
-            // In this case data cannot be null
-            // @ts-ignore
             submitForm(data.get('name').toString(), selected);
         }
     }
@@ -90,7 +88,7 @@ export default function SectorComponent() {
         return (
             <>{
                 registeredCustomer?.sectors.map((sectorCode: string) =>
-                    <Typography variant="caption" display="block" gutterBottom key={sectorCode}>
+                    <Typography variant="subtitle1" display="block" gutterBottom key={sectorCode}>
                         {sectorCode}
                     </Typography>
                 )
