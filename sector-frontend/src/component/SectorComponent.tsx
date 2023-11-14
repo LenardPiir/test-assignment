@@ -22,6 +22,7 @@ export default function SectorComponent() {
     const [selected, setSelected] = useState<string[]>([]);
     const [sectors, setSectors] = useState<Sector[]>([]);
     const [registeredCustomer, setRegisteredCustomer] = useState<SectorForm>();
+    const [registeredCustomerName, setRegisteredCustomerName] = useState<string>('');
 
     const [isNameEmpty, setIsNameEmpty] = useState<boolean>(false);
     const [isSectorsEmpty, setIsSectorsEmpty] = useState<boolean>(false);
@@ -29,7 +30,10 @@ export default function SectorComponent() {
 
     useEffect(() => {
         getSectors().then((response) => {setSectors(response.data)})
-        getRegisteredCustomer().then((response) => {setRegisteredCustomer(response.data)})
+        getRegisteredCustomer().then((response) => {
+            setRegisteredCustomer(response.data);
+            setRegisteredCustomerName(response.data.name);
+        })
     }, []);
 
     const handleToggle = (event: SyntheticEvent, nodeIds: string[]) => {
@@ -68,6 +72,7 @@ export default function SectorComponent() {
 
         saveForm(formData).then((response) => {
             setRegisteredCustomer(response.data);
+            setRegisteredCustomerName(response.data.name);
             showToastMessage();
         });
     }
@@ -135,6 +140,8 @@ export default function SectorComponent() {
                                 label="Name"
                                 type="name"
                                 id="name"
+                                value={registeredCustomerName}
+                                onChange={(e) => setRegisteredCustomerName(e.target.value)}
                             />
                         </Grid>
 
