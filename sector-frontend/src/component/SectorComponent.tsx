@@ -90,7 +90,7 @@ export default function SectorComponent() {
         return (
             <>{
                 registeredCustomer?.sectors.map((sectorCode: string) =>
-                    <Typography variant="caption" display="block" gutterBottom>
+                    <Typography variant="caption" display="block" gutterBottom key={sectorCode}>
                         {sectorCode}
                     </Typography>
                 )
