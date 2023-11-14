@@ -60,7 +60,7 @@ export default function SectorComponent() {
             setIsSectorsEmpty(true);
         }
         if (data.get('name') && data.get('customerAgreement') && selected.length > 0) {
-            submitForm(data.get('name').toString(), selected);
+            submitForm(data.get('name')!.toString(), selected);
         }
     }
 
