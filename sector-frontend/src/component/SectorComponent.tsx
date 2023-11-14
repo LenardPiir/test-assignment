@@ -74,7 +74,7 @@ export default function SectorComponent() {
         }
 
         saveForm(formData).then((response) => {
-            //setCustomerSectors(response.data);
+            setRegisteredCustomer(response.data);
             showToastMessage();
         });
     }
