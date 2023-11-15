@@ -100,7 +100,7 @@ class SectorApiApplicationTests {
 	}
 
 	@Test
-	void getSectorsByLevel__thenReturnAmountOfSectors() throws Exception {
+	void getSectors__thenReturnSectorsAsTree() throws Exception {
 		List<Sector> sectors = new ArrayList<>();
 
 		mockMvc.perform(MockMvcRequestBuilders
@@ -109,11 +109,42 @@ class SectorApiApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andDo(print())
 				.andExpect(jsonPath("$.[0].code").value("MANUFACTURING"))
 				.andExpect(jsonPath("$.[0].children[0].code").value("MANUFACTURING_CONSTRUCTION_MATERIALS"))
 				.andExpect(jsonPath("$.[1].code").value("OTHER"));
+	}
 
+	@Test
+	void addSector_thenReplaceSector_thenReturnReplacedSector() throws Exception {
+		List<String> sectorCodes = new ArrayList<>();
+		sectorCodes.add("MANUFACTURING");
+		Registration registration = new Registration("testName", sectorCodes, true);
+
+		var cookie = mockMvc.perform(MockMvcRequestBuilders
+						.post("/sector-api/customer")
+						.content(asJsonString(registration))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andReturn().getResponse().getCookie("TASK_SESSION");
+
+		sectorCodes.remove("MANUFACTURING");
+		sectorCodes.add("OTHER");
+
+		mockMvc.perform(MockMvcRequestBuilders
+						.post("/sector-api/customer").cookie(cookie)
+						.content(asJsonString(registration))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(MockMvcRequestBuilders
+						.get("/sector-api/customer").cookie(cookie)
+						.content(asJsonString(registration))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.sectors[0]").value("Other"));
 	}
 
 	public static String asJsonString(final Object obj) {
