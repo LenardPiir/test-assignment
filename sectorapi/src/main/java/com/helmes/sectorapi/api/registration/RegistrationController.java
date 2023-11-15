@@ -3,6 +3,7 @@ package com.helmes.sectorapi.api.registration;
 import com.helmes.sectorapi.domain.sector.api.Sector;
 import com.helmes.sectorapi.domain.sector.api.SectorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/customer")
-    public @ResponseBody Registration saveCustomer(@RequestBody Registration registration) {
+    public @ResponseBody Registration saveCustomer(@Validated @RequestBody Registration registration) {
         return registrationService.saveCustomer(registration);
     }
 
