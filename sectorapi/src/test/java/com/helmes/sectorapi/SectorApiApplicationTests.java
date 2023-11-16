@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,6 +117,8 @@ class SectorApiApplicationTests {
 	void addSector_thenReplaceSector_thenReturnReplacedSector() throws Exception {
 		List<String> sectorCodes = new ArrayList<>();
 		sectorCodes.add("MANUFACTURING");
+		sectorCodes.add("MANUFACTURING_CONSTRUCTION_MATERIALS");
+
 		Registration registration = new Registration("testName", sectorCodes, true);
 
 		var cookie = mockMvc.perform(MockMvcRequestBuilders
@@ -128,7 +129,13 @@ class SectorApiApplicationTests {
 				.andExpect(status().isOk())
 				.andReturn().getResponse().getCookie("TASK_SESSION");
 
-		sectorCodes.remove("MANUFACTURING");
+		List<String> oldSectorCodes = new ArrayList<>();
+		oldSectorCodes.add("MANUFACTURING");
+		oldSectorCodes.add("MANUFACTURING_CONSTRUCTION_MATERIALS");
+
+		sectorCodes.removeAll(oldSectorCodes);
+
+		sectorCodes.add("MANUFACTURING");
 		sectorCodes.add("OTHER");
 
 		mockMvc.perform(MockMvcRequestBuilders
@@ -144,7 +151,8 @@ class SectorApiApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.sectors[0]").value("Other"));
+				.andExpect(jsonPath("$.sectors[0]").value("Manufacturing"))
+				.andExpect(jsonPath("$.sectors[1]").value("Other"));
 	}
 
 	public static String asJsonString(final Object obj) {
