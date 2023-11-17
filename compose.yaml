@@ -1,13 +1,4 @@
 services:
-  database:
-    image: 'postgres:16.0'
-    ports:
-      - '5432:5432'
-    environment:
-      - 'POSTGRES_USER=sector-api'
-      - 'POSTGRES_DB=sector'
-      - 'POSTGRES_PASSWORD=sector-api'
-
   sector-frontend:
     build:
       context: ./sector-frontend
@@ -17,5 +8,50 @@ services:
     container_name: sector-frontend
     ports:
       - 3000:3000
+    networks:
+      test:
+
+  sector-api:
+    build:
+      context: ./sectorapi
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    container_name: sector-api
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/sector'
+    depends_on:
+      - 'database'
+    ports:
+      - 8080:8080
+    networks:
+      test:
+
+  nginx:
+    image: nginx:1.25.3
+    ports:
+      - 80:80
+    depends_on:
+      - sector-frontend
+      - sector-api
+    networks:
+      test:
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+  database:
+    image: 'postgres:16.0'
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_USER=sector-api'
+      - 'POSTGRES_DB=sector'
+      - 'POSTGRES_PASSWORD=sector-api'
+    networks:
+      test:
+
+networks:
+  test:
+    driver: bridge
 
 
