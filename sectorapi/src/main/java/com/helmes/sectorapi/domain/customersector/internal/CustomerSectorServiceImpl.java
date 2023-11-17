@@ -12,22 +12,22 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 class CustomerSectorServiceImpl implements CustomerSectorService {
-    private final CustomerSectorRepository repository;
+    private final CustomerSectorRepository customerSectorRepository;
     private final CustomerSectorMapper mapper;
 
     @Override
     public List<CustomerSector> getCustomerSectors(UUID customerId) {
-        return mapper.toDomains(repository.findAllById_CustomerId(customerId));
+        return mapper.toDomains(customerSectorRepository.findAllById_CustomerId(customerId));
     }
 
     @Override
     public List<CustomerSector> saveCustomerSectors(UUID customerId, List<String> sectorCodes) {
-        List<CustomerSectorEntity> entities = repository.findAllById_CustomerId(customerId);
+        List<CustomerSectorEntity> entities = customerSectorRepository.findAllById_CustomerId(customerId);
 
         deleteMissingCustomerSectors(entities, sectorCodes);
         saveMissingSectors(customerId, entities, sectorCodes);
 
-        return mapper.toDomains(repository.findAllById_CustomerId(customerId));
+        return mapper.toDomains(customerSectorRepository.findAllById_CustomerId(customerId));
     }
 
     private void deleteMissingCustomerSectors(List<CustomerSectorEntity> entities, List<String> sectorCodes) {
@@ -37,7 +37,7 @@ class CustomerSectorServiceImpl implements CustomerSectorService {
 
         entities.forEach(entity -> {
             if (!sectorCodes.contains(entity.getId().getSectorCode())) {
-                repository.delete(entity);
+                customerSectorRepository.delete(entity);
             }
         });
     }
@@ -50,11 +50,11 @@ class CustomerSectorServiceImpl implements CustomerSectorService {
         sectorCodes.forEach(sectorCode -> {
             if (entities.stream().noneMatch(entity -> entity.getId().getSectorCode().equals(sectorCode))) {
                 CustomerSectorEntity entity = new CustomerSectorEntity();
-                CustomerSectorId id = new CustomerSectorId();
-                id.setCustomerId(customerId);
-                id.setSectorCode(sectorCode);
-                entity.setId(id);
-                repository.save(entity);
+                CustomerSectorId customerSectorId = new CustomerSectorId();
+                customerSectorId.setCustomerId(customerId);
+                customerSectorId.setSectorCode(sectorCode);
+                entity.setId(customerSectorId);
+                customerSectorRepository.save(entity);
             }
         });
     }
