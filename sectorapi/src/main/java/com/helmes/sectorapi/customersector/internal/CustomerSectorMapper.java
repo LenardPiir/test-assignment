@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 class CustomerSectorMapper {
     public CustomerSector toDomain(CustomerSectorEntity entity) {
-        CustomerSectorId id = entity.getId();
+        CustomerSectorIntersect id = entity.getId();
 
         return new CustomerSector(
                 id.getCustomerId(),

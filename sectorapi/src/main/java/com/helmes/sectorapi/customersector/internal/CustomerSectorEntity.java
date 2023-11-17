@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 class CustomerSectorEntity {
     @EmbeddedId
-    private CustomerSectorId id;
+    private CustomerSectorIntersect id;
 }

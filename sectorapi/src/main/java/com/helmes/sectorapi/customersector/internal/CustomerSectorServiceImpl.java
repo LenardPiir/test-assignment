@@ -50,10 +50,10 @@ class CustomerSectorServiceImpl implements CustomerSectorService {
         sectorCodes.forEach(sectorCode -> {
             if (entities.stream().noneMatch(entity -> entity.getId().getSectorCode().equals(sectorCode))) {
                 CustomerSectorEntity entity = new CustomerSectorEntity();
-                CustomerSectorId customerSectorId = new CustomerSectorId();
-                customerSectorId.setCustomerId(customerId);
-                customerSectorId.setSectorCode(sectorCode);
-                entity.setId(customerSectorId);
+                CustomerSectorIntersect customerSectorIntersect = new CustomerSectorIntersect();
+                customerSectorIntersect.setCustomerId(customerId);
+                customerSectorIntersect.setSectorCode(sectorCode);
+                entity.setId(customerSectorIntersect);
                 customerSectorRepository.save(entity);
             }
         });

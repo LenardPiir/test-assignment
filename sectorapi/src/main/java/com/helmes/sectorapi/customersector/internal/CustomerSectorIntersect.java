@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Embeddable
-class CustomerSectorId implements Serializable {
+class CustomerSectorIntersect implements Serializable {
     private UUID customerId;
     private String sectorCode;
 }

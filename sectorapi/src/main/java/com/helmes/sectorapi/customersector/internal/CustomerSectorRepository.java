@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-interface CustomerSectorRepository extends CrudRepository<CustomerSectorEntity, CustomerSectorId> {
+interface CustomerSectorRepository extends CrudRepository<CustomerSectorEntity, CustomerSectorIntersect> {
     List<CustomerSectorEntity> findAllById_CustomerId(UUID customerId);
 }
