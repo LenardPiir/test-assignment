@@ -1,8 +1,8 @@
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-CMD ["./gradlew", "clean", "bootJar"]
-
 COPY . .
+
+RUN ./gradlew bootJar
 
 ENTRYPOINT ["java","-jar","build/libs/sectorapi-0.0.1-SNAPSHOT.jar"]
