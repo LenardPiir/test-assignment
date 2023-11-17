@@ -19,5 +19,7 @@ For further development:
         If there are more forms coming with further development use Formik to handle forms.
     backend:
         Further development could be done package by feature by packaging sector, registration, customersector and customer under one feature package.
+    database migrations:
+        Use flyway or liquibase for migrations.
         
 
