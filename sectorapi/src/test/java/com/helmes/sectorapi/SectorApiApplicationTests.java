@@ -1,11 +1,11 @@
 package com.helmes.sectorapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.helmes.sectorapi.api.registration.Registration;
-import com.helmes.sectorapi.domain.customer.api.CustomerService;
-import com.helmes.sectorapi.domain.sector.api.Sector;
-import com.helmes.sectorapi.domain.sector.api.SectorService;
-import com.helmes.sectorapi.domain.session.api.SessionService;
+import com.helmes.sectorapi.registration.internal.RegistrationForm;
+import com.helmes.sectorapi.customer.api.CustomerService;
+import com.helmes.sectorapi.sector.api.Sector;
+import com.helmes.sectorapi.sector.api.SectorService;
+import com.helmes.sectorapi.session.api.SessionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,11 +47,11 @@ class SectorApiApplicationTests {
 	void givenCustomer_thenReturnCustomerName() throws Exception {
 		List<String> sectorCodes = new ArrayList<>();
 		sectorCodes.add("MANUFACTURING");
-		Registration registration = new Registration("testName", sectorCodes, true);
+		RegistrationForm registrationForm = new RegistrationForm("testName", sectorCodes, true);
 
 		mockMvc.perform(MockMvcRequestBuilders
 						.post("/sector-api/customer")
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -64,11 +64,11 @@ class SectorApiApplicationTests {
 
 		List<String> sectorCodes = new ArrayList<>();
 		sectorCodes.add("MANUFACTURING");
-		Registration registration = new Registration("", sectorCodes, true);
+		RegistrationForm registrationForm = new RegistrationForm("", sectorCodes, true);
 
 		mockMvc.perform(MockMvcRequestBuilders
 						.post("/sector-api/customer")
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
@@ -80,18 +80,18 @@ class SectorApiApplicationTests {
 	void saveCustomer__getCustomerWithSession__thenReturnSavedCustomer() throws Exception {
 		List<String> sectorCodes = new ArrayList<>();
 		sectorCodes.add("MANUFACTURING");
-		Registration registration = new Registration("testName", sectorCodes, true);
+		RegistrationForm registrationForm = new RegistrationForm("testName", sectorCodes, true);
 
 		var cookie = mockMvc.perform(MockMvcRequestBuilders
 				.post("/sector-api/customer")
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 		).andReturn().getResponse().getCookie("TASK_SESSION");
 
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/sector-api/customer").cookie(cookie)
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -119,11 +119,11 @@ class SectorApiApplicationTests {
 		sectorCodes.add("MANUFACTURING");
 		sectorCodes.add("MANUFACTURING_CONSTRUCTION_MATERIALS");
 
-		Registration registration = new Registration("testName", sectorCodes, true);
+		RegistrationForm registrationForm = new RegistrationForm("testName", sectorCodes, true);
 
 		var cookie = mockMvc.perform(MockMvcRequestBuilders
 						.post("/sector-api/customer")
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -140,14 +140,14 @@ class SectorApiApplicationTests {
 
 		mockMvc.perform(MockMvcRequestBuilders
 						.post("/sector-api/customer").cookie(cookie)
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
 		mockMvc.perform(MockMvcRequestBuilders
 						.get("/sector-api/customer").cookie(cookie)
-						.content(asJsonString(registration))
+						.content(asJsonString(registrationForm))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
